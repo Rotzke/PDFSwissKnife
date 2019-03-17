@@ -1,0 +1,50 @@
+version: '3'
+services:
+  elastic:
+    image: "elasticsearch:6.5.1"
+    ports:
+          - "9200:9200"
+    volumes:
+          - index:/usr/share/elasticsearch/data:rw
+    environment:
+          - discovery.type=single-node
+          - http.host=0.0.0.0
+          - transport.host=127.0.0.1
+          - xpack.security.enabled=false
+          - ES_JAVA_OPTS=-Xms750m -Xmx750m
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
+  fscrawl:
+    image: "shadiakiki1986/fscrawler"
+    depends_on:
+      - elastic
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
+    volumes:
+        - ./fscrawler:/usr/share/fscrawler/config:rw
+        - ./books:/tmp/es
+
+  web:
+    build: ./flask
+    ports:
+        - "5000:5000"
+    volumes:
+        - ./flask:/code
+        - ./books:/books
+    depends_on:
+        - fscrawl
+
+  volumes:
+    index:
+      driver: local
+      driver_opts:
+        type: "nfs"
+        o: "addr=192.168.1.183,nolock,soft,rw"
+        device: ":/volume1/books/index"
