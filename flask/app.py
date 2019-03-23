@@ -1,4 +1,3 @@
-import os
 import subprocess
 
 import requests
@@ -33,9 +32,9 @@ def search():
     results = False
     search = ''
     title = ''
-    books = len([name for name in os.listdir('/books') if os.path.isfile(name)])
+    books = subprocess.check_output(["ls /books/*.pdf | wc -l"], shell=True).decode()
     try:
-        indexed = int(requests.get('http://elastic:9200/_search').json()['hits']['total']) - 1  # excluding fscrawl
+        indexed = int(requests.get('http://elastic:9200/_search').json()['hits']['total'])
     except (KeyError, IndexError, TypeError):
         indexed = 'N/A'
     if request.method == 'POST':
