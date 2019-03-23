@@ -5,6 +5,7 @@ services:
     image: "elasticsearch:6.5.1"
     ports:
           - "9200:9200"
+    restart: always
     volumes:
           - index:/usr/share/elasticsearch/data:rw
     environment:
@@ -35,6 +36,7 @@ services:
 
   web:
     build: ./flask
+    restart: always
     ports:
         - "5000:5000"
     volumes:
@@ -45,6 +47,7 @@ services:
 
   scraper:
     build: ./scraper
+    restart: always
     volumes:
       - ./scraper:/scraper
       - ./books:/books

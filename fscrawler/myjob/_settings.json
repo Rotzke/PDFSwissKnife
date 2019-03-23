@@ -14,10 +14,10 @@
     "attributes_support" : false,
     "raw_metadata" : true,
     "xml_support" : false,
-    "index_folders" : true,
+    "index_folders" : false,
     "lang_detect" : false,
-    "continue_on_error" : false,
-    "pdf_ocr" : true,
+    "continue_on_error" : true,
+    "pdf_ocr" : false,
     "ocr" : {
       "language" : "eng"
     }
