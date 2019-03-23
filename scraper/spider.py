@@ -5,7 +5,6 @@ import os
 import re
 import requests
 from time import sleep
-import uuid
 from multiprocessing.pool import ThreadPool
 
 logging.basicConfig(format='[%(asctime)s] %(levelname)s: %(message)s',
@@ -64,21 +63,17 @@ def fetch_url(item):
                 for chunk in r:
                     f.write(chunk)
             logging.info(f"\t[{item['title']}]...OK")
-        else:
-            logging.warning(f"\t{item['title']}...FAIL [has no PDF version]")
-    else:
-        logging.warning(f"\t{item['title']}...EXISTS")
     return path
 
 
 if __name__ == "__main__":
     while True:
         items = get_links()
-        directory = 'books'
+        directory = '/books'
         os.makedirs(directory, exist_ok=True)
         while True:
             try:
-                ThreadPool(100).map(fetch_url, items)
+                ThreadPool(10).map(fetch_url, items)
                 break
             except Exception as e:
                 continue

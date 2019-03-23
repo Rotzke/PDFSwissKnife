@@ -1,5 +1,6 @@
 version: '2'
 services:
+
   elastic:
     image: "elasticsearch:6.5.1"
     ports:
@@ -17,6 +18,7 @@ services:
       options:
         max-size: "10m"
         max-file: "10"
+
   fscrawl:
     image: "shadiakiki1986/fscrawler"
     depends_on:
@@ -42,3 +44,8 @@ services:
     depends_on:
         - fscrawl
 
+  scraper:
+    build: ./scraper
+    volumes:
+      - ./scraper:/scraper
+      - ./books:/books

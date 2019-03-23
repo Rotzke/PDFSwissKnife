@@ -1,0 +1,41 @@
+{
+  "name" : "myjob",
+  "fs" : {
+    "url" : "/tmp/es",
+    "update_rate" : "15m",
+    "excludes" : [ "*/~*" ],
+    "json_support" : false,
+    "filename_as_id" : false,
+    "add_filesize" : true,
+    "remove_deleted" : true,
+    "add_as_inner_object" : false,
+    "store_source" : false,
+    "index_content" : true,
+    "attributes_support" : false,
+    "raw_metadata" : true,
+    "xml_support" : false,
+    "index_folders" : true,
+    "lang_detect" : false,
+    "continue_on_error" : false,
+    "pdf_ocr" : true,
+    "ocr" : {
+      "language" : "eng"
+    }
+  },
+  "elasticsearch" : {
+    "nodes" : [ {
+      "host" : "elastic",
+      "port" : 9200,
+      "scheme" : "HTTP"
+    } ],
+    "bulk_size" : 100,
+    "flush_interval" : "5s",
+    "byte_size" : "10mb"
+  },
+  "rest" : {
+    "scheme" : "HTTP",
+    "host" : "127.0.0.1",
+    "port" : 8080,
+    "endpoint" : "fscrawler"
+  }
+}
