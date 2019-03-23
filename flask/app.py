@@ -1,9 +1,10 @@
 import os
 import subprocess
 
+import requests
 from flask import Flask, render_template, flash, request
-from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField
-from search_client import search_term
+from wtforms import Form, TextField, validators
+from modules.search_client import search_term
 from werkzeug.utils import secure_filename
 
 # App config.
@@ -30,6 +31,13 @@ class ReusableForm(Form):
 def search():
     form = ReusableForm(request.form)
     results = False
+    search = ''
+    title = ''
+    books = len([name for name in os.listdir('/books') if os.path.isfile(name)])
+    try:
+        indexed = int(requests.get('http://elastic:9200/_search').json()['hits']['total']) - 1  # excluding fscrawl
+    except (KeyError, IndexError, TypeError):
+        indexed = 'N/A'
     if request.method == 'POST':
         search = request.form['search']
         title = request.form['title']
@@ -42,7 +50,13 @@ def search():
                 flash('Please see search results below')
         else:
             flash('Error: Please enter a search term!')
-    return render_template('search.html', form=form, results=results)
+    return render_template('search.html',
+                           form=form,
+                           results=results,
+                           books=books,
+                           indexed=indexed,
+                           search=search,
+                           title=title)
 
 
 @app.route("/ocr", methods=['GET', 'POST'])
@@ -64,9 +78,12 @@ def ocr():
                     filename = secure_filename(file.filename)
                     filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                     file.save(filepath)
-                    subprocess.check_output(["convert -limit memory 2GiB -limit map 4GiB -density 300 /books/tmp/{0} -depth 8 -strip -background white -alpha off /books/tmp/{0}.png".format(filename)],
+                    subprocess.check_output([
+                                                "convert -limit memory 2GiB -limit map 4GiB -density 300 /books/tmp/{0} -depth 8 -strip -background white -alpha off /books/tmp/{0}.png".format(
+                                                    filename)],
                                             shell=True)
-                    subprocess.check_output([f"for i in `ls /books/tmp/ | grep '{filename}.*png'`;do tesseract /books/tmp/$i -l eng+spa /books/$i;done"],
+                    subprocess.check_output([
+                                                f"for i in `ls /books/tmp/ | grep '{filename}.*png'`;do tesseract /books/tmp/$i -l eng+spa /books/$i;done"],
                                             shell=True)
                     flash(f'The file {filename} was processed')
                 else:

@@ -4,16 +4,16 @@ services:
   elastic:
     image: "elasticsearch:6.5.1"
     ports:
-          - "9200:9200"
+      - "9200:9200"
     restart: always
     volumes:
-          - index:/usr/share/elasticsearch/data:rw
+      - index:/usr/share/elasticsearch/data:rw
     environment:
-          - discovery.type=single-node
-          - http.host=0.0.0.0
-          - transport.host=127.0.0.1
-          - xpack.security.enabled=false
-          - ES_JAVA_OPTS=-Xms750m -Xmx750m
+      - discovery.type=single-node
+      - http.host=0.0.0.0
+      - transport.host=127.0.0.1
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms750m -Xmx750m
     logging:
       driver: "json-file"
       options:
@@ -31,19 +31,19 @@ services:
         max-size: "10m"
         max-file: "10"
     volumes:
-        - ./fscrawler:/usr/share/fscrawler/config:rw
-        - ./books:/tmp/es
+      - ./fscrawler:/usr/share/fscrawler/config:rw
+      - ./books:/tmp/es
 
   web:
     build: ./flask
     restart: always
     ports:
-        - "5000:5000"
+      - "5000:5000"
     volumes:
-        - ./flask:/code
-        - ./books:/books
+      - ./flask:/code
+      - ./books:/books
     depends_on:
-        - fscrawl
+      - fscrawl
 
   scraper:
     build: ./scraper

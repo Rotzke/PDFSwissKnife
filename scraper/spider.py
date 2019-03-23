@@ -27,8 +27,8 @@ def get_links():
     """Helper to generate links to PDF files."""
     links = []
     cursor = ''
-    url = 'https://archive.org/services/search/v1/scrape?' +\
-        'fields=title&q=genealogy&count=10000'
+    url = 'https://archive.org/services/search/v1/scrape?' + \
+          'fields=title&q=genealogy&count=10000'
 
     while True:
         body = requests.get(url + cursor)

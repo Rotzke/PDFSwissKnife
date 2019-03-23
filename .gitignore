@@ -2,3 +2,4 @@ books/tmp/*
 books/*.pdf
 .idea/
 index/*
+__pycache__

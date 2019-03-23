@@ -1,133 +1,147 @@
 <title>PDF Search Engine</title>
-	<link rel="stylesheet" media="screen" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-	<script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap-theme.min.css">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<script>
-function sortTable(n) {
-  var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-  table = document.getElementById("myTable2");
-  switching = true;
-  // Set the sorting direction to ascending:
-  dir = "asc";
-  /* Make a loop that will continue until
-  no switching has been done: */
-  while (switching) {
-    // Start by saying: no switching is done:
-    switching = false;
-    rows = table.rows;
-    /* Loop through all table rows (except the
-    first, which contains table headers): */
-    for (i = 1; i < (rows.length - 1); i++) {
-      // Start by saying there should be no switching:
-      shouldSwitch = false;
-      /* Get the two elements you want to compare,
-      one from current row and one from the next: */
-      x = rows[i].getElementsByTagName("TD")[n];
-      y = rows[i + 1].getElementsByTagName("TD")[n];
-      /* Check if the two rows should switch place,
-      based on the direction, asc or desc: */
-      if (dir == "asc") {
-        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-          // If so, mark as a switch and break the loop:
-          shouldSwitch = true;
-          break;
-        }
-      } else if (dir == "desc") {
-        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-          // If so, mark as a switch and break the loop:
-          shouldSwitch = true;
-          break;
-        }
-      }
-    }
-    if (shouldSwitch) {
-      /* If a switch has been marked, make the switch
-      and mark that a switch has been done: */
-      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-      switching = true;
-      // Each time a switch is done, increase this count by 1:
-      switchcount ++;
-    } else {
-      /* If no switching has been done AND the direction is "asc",
-      set the direction to "desc" and run the while loop again. */
-      if (switchcount == 0 && dir == "asc") {
-        dir = "desc";
+<link rel="stylesheet" media="screen" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap-theme.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+    function sortTable(n) {
+        var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+        table = document.getElementById("myTable2");
         switching = true;
-      }
+        // Set the sorting direction to ascending:
+        dir = "asc";
+        /* Make a loop that will continue until
+        no switching has been done: */
+        while (switching) {
+            // Start by saying: no switching is done:
+            switching = false;
+            rows = table.rows;
+            /* Loop through all table rows (except the
+            first, which contains table headers): */
+            for (i = 1; i < (rows.length - 1); i++) {
+                // Start by saying there should be no switching:
+                shouldSwitch = false;
+                /* Get the two elements you want to compare,
+                one from current row and one from the next: */
+                x = rows[i].getElementsByTagName("TD")[n];
+                y = rows[i + 1].getElementsByTagName("TD")[n];
+                /* Check if the two rows should switch place,
+                based on the direction, asc or desc: */
+                if (dir == "asc") {
+                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                        // If so, mark as a switch and break the loop:
+                        shouldSwitch = true;
+                        break;
+                    }
+                } else if (dir == "desc") {
+                    if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                        // If so, mark as a switch and break the loop:
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+            }
+            if (shouldSwitch) {
+                /* If a switch has been marked, make the switch
+                and mark that a switch has been done: */
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+                // Each time a switch is done, increase this count by 1:
+                switchcount++;
+            } else {
+                /* If no switching has been done AND the direction is "asc",
+                set the direction to "desc" and run the while loop again. */
+                if (switchcount == 0 && dir == "asc") {
+                    dir = "desc";
+                    switching = true;
+                }
+            }
+        }
     }
-  }
-}
 </script>
 <nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="#">PDF Swiss Knife</a>
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">PDF Swiss Knife</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Search Engine</a></li>
+            <li><a href="/ocr">OCR Engine</a></li>
+        </ul>
     </div>
-    <ul class="nav navbar-nav">
-      <li class="active"><a href="#">Search Engine</a></li>
-      <li><a href="/ocr">OCR Engine</a></li>
-    </ul>
-  </div>
 </nav>
 <div class="container">
-	<h2>PDF Search Engine v1.0</h2>
-	<form action="" method="post" role="form">
-    	{{ form.csrf }}
-	<div class="form-group">
-      	<label for="search">Search term pattern:</label>
-		<input type="text" class="form-control" id="search" name="search" placeholder="Enter search pattern">
-		<br>
-		<label for="title">Title pattern:</label>
-		<input type="text" class="form-control" id="title" name="title" placeholder="Enter title sorting pattern (or leave blank)">
-	</div>
-		<button type="submit" class="btn btn-success">Submit!</button>
-	</form>
-	{% with messages = get_flashed_messages(with_categories=true) %}
+    <div class="row">
+        <h2>PDF Search Engine v1.0</h2>
+        <h5>We have <b>{{ books }}</b> books in storage and <b>{{ indexed }}</b> indexes for now</h5>
+        <hr>
+        <div class="col-md-4">
+        </div>
+        <div class="col-md-4">
+            <form action="" method="post" role="form">
+                {{ form.csrf }}
+                <div class="form-group">
+                    <label for="search">Search term pattern:</label>
+                    <input type="text" class="form-control" id="search" name="search"
+                           placeholder="Enter search pattern (regex is supported)" value="{{ search }}">
+                    <br>
+                    <label for="title">Title pattern:</label>
+                    <input type="text" class="form-control" id="title" name="title"
+                           placeholder="Enter title sorting pattern (or leave blank)" value="{{ title }}">
+                </div>
+                <button type="submit" class="btn btn-success btn-block">Submit!</button>
+            </form>
+        </div>
+        <div class="col-md-4">
+        </div>
+    </div>
+    <div class="row">
+        {% with messages = get_flashed_messages(with_categories=true) %}
 
-	{% if messages %}
-	{% for message in messages %}
-	{% if "Error" not in message[1]: %}
-	<div class="alert alert-success"><strong>Success! </strong> {{ message[1] }}</div>
-	{% endif %}
+        {% if messages %}
+        {% for message in messages %}
+        {% if "Error" not in message[1]: %}
+        <div class="alert alert-success"><strong>Success! </strong> {{ message[1] }}</div>
+        {% endif %}
 
-	{% if "Error" in message[1]: %}
-	<div class="alert alert-warning">{{ message[1] }}</div>
-	{% endif %}
-	{% endfor %}
-	{% endif %}
-	{% endwith %}
-
-	{% if results %}
-	<div class="container-fluid">
-	<div class="row">
-		<div class="col-md-12">
-			<table id="myTable2" class="table table-bordered table-hover table-sm table-condensed">
-				<thead>
-					<tr>
-						<th onclick="sortTable(0)">
-							Title
-						</th>
-						<th>
-							Filepath
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-				{% for result in results %}
-					<tr>
-						<td>
-							{{ result.title }}
-						</td>
-						<td>
-							<a href="{{ result.filename }}" target="_blank" role="button" class="btn btn-info">Open file</a>
-						</td>
-					</tr>
-				{% endfor %}
-				</tbody>
-			</table>
-		</div>
-	</div>
-</div>
-	{% endif %}
+        {% if "Error" in message[1]: %}
+        <div class="alert alert-warning">{{ message[1] }}</div>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
+    {% if results %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <table id="myTable2" class="table table-bordered table-hover table-sm table-condensed">
+                    <thead>
+                    <tr>
+                        <th onclick="sortTable(0)">
+                            Title
+                        </th>
+                        <th>
+                            Filepath
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for result in results %}
+                    <tr>
+                        <td>
+                            {{ result.title }}
+                        </td>
+                        <td>
+                            <a href="{{ result.filename }}" target="_blank" role="button" class="btn btn-info">Open
+                                file</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
